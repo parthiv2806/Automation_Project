@@ -103,3 +103,35 @@ test("Detail page should show pre-filled name and email and passwrod should not 
   const message = await password.evaluate((el) => el.validationMessage);
   expect(message).toContain("fill out this field");
 });
+
+test("Detail page should show pre-filled name and email and Firstname should not empty validation", async ({
+  page,
+}) => {
+  await page.goto("https://automationexercise.com/login");
+
+  // Step 1: Signup page
+  await page.getByTestId("signup-name").fill("Parthiv");
+  await page.getByTestId("signup-email").fill("parthivbhavsar@gmail.com");
+  await page.getByTestId("signup-button").click();
+
+  // Step 2: Redirect verify
+  await expect(page).toHaveURL("https://automationexercise.com/signup", {
+  waitUntil: "domcontentloaded",
+});
+  await expect(
+    page.getByRole("heading", { name: "Enter Account Information" })
+  ).toHaveText("Enter Account Information");
+
+  // Step 3: Pre-filled data verify
+  await expect(page.getByTestId("name")).toHaveValue("Parthiv");
+  await expect(page.getByTestId("email")).toHaveValue(
+    "parthivbhavsar@gmail.com"
+  );
+  await page.getByTestId("password").fill("Test@123");
+  const firstname = page.getByTestId("first_name");
+  //click on the create account button
+  await page.getByTestId("create-account").click();
+
+  const message = await firstname.evaluate((el) => el.validationMessage);
+  expect(message).toContain("fill out this field");
+});
