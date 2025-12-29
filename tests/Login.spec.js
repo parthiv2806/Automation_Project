@@ -54,5 +54,9 @@ test("Login with proper email nad pssword", async ({ page }) => {
   await page.getByTestId("login-password").fill("Test@123");
   await page.getByTestId("login-button").click();
   await expect(page).toHaveURL("https://automationexercise.com/");
+  await expect(
+    page.getByRole("link", { name: /Logged in as Parthiv/i })
+  ).toBeVisible();
+
   await page.getByRole("link", { name: " Logout" }).click();
 });
